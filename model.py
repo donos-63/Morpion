@@ -2,26 +2,35 @@ from keras.layers import Dense
 from keras.layers import Dropout
 from keras.models import Sequential
 from keras.utils import to_categorical
+# from tensorflow import keras
 import numpy as np
 
 
 class TicTacToeModel:
 
     def __init__(self, numberOfInputs, numberOfOutputs, epochs, batchSize):
-        try:
-            self.model = load_model("morbac.h5")
-        except:
-            self.epochs = epochs
-            self.batchSize = batchSize
-            self.numberOfInputs = numberOfInputs
-            self.numberOfOutputs = numberOfOutputs
-            self.model = Sequential()
-            self.model.add(Dense(64, activation='relu', input_shape=(numberOfInputs, )))
-            self.model.add(Dense(128, activation='relu'))
-            self.model.add(Dense(128, activation='relu'))
-            self.model.add(Dense(128, activation='relu'))
-            self.model.add(Dense(numberOfOutputs, activation='softmax'))
-            self.model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+        # try:
+        #     self.model = load_model("morbac.h5")
+        # except:
+        self.epochs = epochs
+        self.batchSize = batchSize
+        self.numberOfInputs = numberOfInputs
+        self.numberOfOutputs = numberOfOutputs
+        self.model = Sequential()
+        self.model.add(Dense(64, activation='relu', input_shape=(numberOfInputs, )))
+        self.model.add(Dense(128, activation='relu'))
+        self.model.add(Dense(128, activation='relu'))
+        self.model.add(Dense(128, activation='relu'))
+        self.model.add(Dense(numberOfOutputs, activation='softmax'))
+        self.model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+
+        # try:
+        #     self.model = keras.models.load_model("morbac.h5")
+        #     print("Chargement du modèle sauvegardé")
+        # except:
+        #     print("Création du modèle")
+
+            
 
     def train(self, dataset):
         input = []

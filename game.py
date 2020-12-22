@@ -1,6 +1,11 @@
 import os
 import random
+# import MinMaxScaler
 from model import TicTacToeModel
+from player import Player
+from sklearn.preprocessing import MinMaxScaler
+from tensorflow import keras
+
 import copy
 
 PLAYER_X = 'X'
@@ -18,6 +23,12 @@ GAME_STATE_NOT_ENDED = 2
 playerXWins = 0
 playerOWins = 0
 draws = 0
+player = Player("X")
+totalWins = 0
+nnPlayerWins = 0
+randomPlayerWins = 0
+draws = 0
+numberOfGames = 0
 
 
 class Game:
@@ -25,6 +36,7 @@ class Game:
     def __init__(self):
         self.resetBoard()
         self.trainingHistory = []
+        self.player = Player("X")
 
     def resetBoard(self):
         self.board = [
@@ -195,15 +207,26 @@ class Game:
 
 
     def simulate(self, playerToMove):
+        scaler = MinMaxScaler()
         while (self.getGameResult() == GAME_STATE_NOT_ENDED):
             availableMoves = self.getAvailableMoves()
+            #scaler.fit(availableMoves)
             selectedMove = availableMoves[random.randrange(0, len(availableMoves))]
+            # selectedMove = scaler.fit(availableMoves)
+            # selectedMove = scaler.transform(selectedMove)
+            # minmaxscale = MinMaxScaler().fit(availableMoves)
+            
+            # print(availableMoves)
+            # availableMoves = minmaxscale.transform(availableMoves)
+            # print(availableMoves)
+            # print(random.randint(0, 9))
             self.move(selectedMove, playerToMove)
             if playerToMove == PLAYER_X_VAL:
                 playerToMove = PLAYER_O_VAL
             else:
                 playerToMove = PLAYER_X_VAL
         # Get the history and build the training set
+        # print(self.boardHistory)
         for historyItem in self.boardHistory:
             self.trainingHistory.append((self.getGameResult(), copy.deepcopy(historyItem)))
 
@@ -229,6 +252,7 @@ class Game:
                     if value > maxValue:
                         maxValue = value
                         bestMove = availableMove
+                    # print (bestMove)
                 selectedMove = bestMove
                 # else:
                 #     selectedMove = availableMoves[random.randrange(0, len(availableMoves))]
@@ -262,6 +286,9 @@ class Game:
             # print(selectedMove)
             # selectedMove = [1,1]
             # print (nnPlayer)
+            # print (selectedMove)
+            # print (PLAYER_X_VAL)
+            # print (PLAYER_O_VAL)
             self.move(selectedMove, nnPlayer)
             if nnPlayer == PLAYER_X_VAL:
                 nnPlayer = PLAYER_O_VAL
@@ -301,11 +328,11 @@ class Game:
         # print('O Wins: ' + str(int(playerOWins * 100 / totalWins)) + '%')
         # print('Draws: ' + str(int(draws * 100 / totalWins)) + '%')
 
-
-    def simulateManyNeuralNetworkGames(self, nnPlayer, numberOfGames, model):
-        nnPlayerWins = 0
-        randomPlayerWins = 0
-        draws = 0
+    def simulateManyNeuralNetworkGames(self, nnPlayer, numberOfGames, model, nnPlayerWins, randomPlayerWins, draws):
+    # def simulateManyNeuralNetworkGames(self, nnPlayer, numberOfGames, model):
+        # nnPlayerWins = 0
+        # randomPlayerWins = 0
+        # draws = 0
         # print ("NN player")
         # print (nnPlayer)
         # for i in range(numberOfGames):
@@ -328,12 +355,18 @@ class Game:
             randomPlayerWins = randomPlayerWins + 1
             print ("J'ai gagné")
 
-        # totalWins = playerXWins + playerOWins + draws
-        totalWins = nnPlayerWins + randomPlayerWins + draws
+        numberOfGames = numberOfGames + 1
 
-        print ('Victoires du joueur (X)     : ' + str(int(nnPlayerWins * 100/totalWins)) + '%')
-        print ('Victoires de la machine (O) : ' + str(int(randomPlayerWins * 100 / totalWins)) + '%')
-        print ('Egalité                     : ' + str(int(draws * 100 / totalWins)) + '%')
+        # totalWins = playerXWins + playerOWins + draws
+        # totalWins = nnPlayerWins + randomPlayerWins + draws
+        print (numberOfGames)
+        print (nnPlayerWins)
+        print (randomPlayerWins)
+        print (draws)
+
+        print ('Victoires du joueur (X)     : ' + str(int(nnPlayerWins * 100/numberOfGames)) + '%')
+        print ('Victoires de la machine (O) : ' + str(int(randomPlayerWins * 100 / numberOfGames)) + '%')
+        print ('Egalité                     : ' + str(int(draws * 100 / numberOfGames)) + '%')
 
         # if self.getGameResult() == nnPlayer:
         #     print ("Vous avez gagné")
@@ -363,23 +396,83 @@ class Game:
 if __name__ == "__main__":
     game = Game()
     partie = True
-    while (partie == True):
+
+    ticTacToeModel = TicTacToeModel(9, 3, 100, 32)
+
+    try:
+        ticTacToeModel.model = keras.models.load_model("morbac.h5")
+        print(ticTacToeModel.model.layers[0])
+        # for historyItem in ticTacToeModel.model:
+        #     self.trainingHistory.append((ticTacToeModel.model, copy.deepcopy(historyItem)))
+        print("Chargement du modèle sauvegardé")
+    except:
+        print("Création du modèle")
         print ("J'apprends à jouer")
         game.simulateManyGames(1, 100)
-        ticTacToeModel = TicTacToeModel(9, 3, 100, 32)
         ticTacToeModel.train(game.getTrainingHistory())
+
+    while (partie == True):
+        # print ("J'apprends à jouer")
+        # game.simulateManyGames(1, 100)
+        # ticTacToeModel = TicTacToeModel(9, 3, 100, 32)
+        # ticTacToeModel.train(game.getTrainingHistory())
         # ticTacToeModel.save("morbac.h5")
+
+        
+        # ticTacToeModel = TicTacToeModel(9, 3, 100, 32)
+
+        # try:
+        #     ticTacToeModel.model = keras.models.load_model("morbac.h5")
+        #     print("Chargement du modèle sauvegardé")
+        # except:
+        #     print("Création du modèle")
+        #     print ("J'apprends à jouer")
+        #     game.simulateManyGames(1, 100)
+        #     ticTacToeModel.train(game.getTrainingHistory())
 
         print ("Le jeu commence")
         print ("Tirage au sort")
         if (random.randint(0, 1) == 0):
-            joueur = PLAYER_X_VAL
+            # joueur = PLAYER_X_VAL
+            # player.set_player(PLAYER_X_VAL)
+            player = Player(PLAYER_X_VAL)
             print ("A vous de commencer")
         else:
-            joueur = PLAYER_O_VAL
+            # joueur = PLAYER_O_VAL
+            # player.set_player(PLAYER_O_VAL)
+            player = Player(PLAYER_O_VAL)
             print ("Je commence")
-        game.simulateManyNeuralNetworkGames(joueur, 100, ticTacToeModel)
+        joueur = player.get_player()
+        # game.simulateManyNeuralNetworkGames(joueur, 100, ticTacToeModel)
+        # game.simulateManyNeuralNetworkGames(joueur, numberOfGames, ticTacToeModel, nnPlayerWins, randomPlayerWins, draws)
 
+        game.resetBoard()
+        game.simulateNeuralNetwork(joueur, ticTacToeModel)
+
+        print("Partie terminée")
+
+        if (game.getGameResult() == GAME_STATE_DRAW):
+            draws = draws + 1
+            print ("Egalité")
+        elif (game.getGameResult() == PLAYER_X_VAL):
+            nnPlayerWins = nnPlayerWins + 1
+            print ("Vous avez gagné")
+        elif (game.getGameResult() == PLAYER_O_VAL):
+            randomPlayerWins = randomPlayerWins + 1
+            print ("J'ai gagné")
+
+        numberOfGames = numberOfGames + 1
+
+        print (numberOfGames)
+        print (nnPlayerWins)
+        print (randomPlayerWins)
+        print (draws)
+
+        print ('Victoires du joueur (X)     : ' + str(int(nnPlayerWins * 100/numberOfGames)) + '%')
+        print ('Victoires de la machine (O) : ' + str(int(randomPlayerWins * 100 / numberOfGames)) + '%')
+        print ('Egalité                     : ' + str(int(draws * 100 / numberOfGames)) + '%')
+
+        game.printBoard()
 
         validationChoix = ""
         while (validationChoix == ""):
@@ -387,12 +480,17 @@ if __name__ == "__main__":
             choix = input()
             if (choix == "o"):
                 validationChoix = "ok"
+                
             if (choix == "n"):
                 partie = False
                 validationChoix = "ok"
                 print ("Au revoir")
             if (validationChoix == ""):
                 print('Choix non valide')
+
+        print ("Je réfléchis à de nouvelles stratégies")
+        game.simulateManyGames(1, 100)
+        ticTacToeModel.train(game.getTrainingHistory())
     # print("Simulating with Neural Network as O Player:")
     # game.simulateManyNeuralNetworkGames(PLAYER_O_VAL, 10, ticTacToeModel)
 
