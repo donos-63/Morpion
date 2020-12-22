@@ -1,9 +1,7 @@
 import os
 import random
-# import MinMaxScaler
 from model import TicTacToeModel
 from player import Player
-from sklearn.preprocessing import MinMaxScaler
 from tensorflow import keras
 
 import copy
@@ -46,6 +44,7 @@ class Game:
         ]
         self.boardHistory = []
 
+    # Afficher la grille
     def printBoard(self):
         print(VERTICAL_SEPARATOR)
         for i in range(len(self.board)):
@@ -63,68 +62,32 @@ class Game:
 
     def getGameResult(self):
         finPartie = 0
-        # vierge = 0
-        # for i in range(len(self.board)):
-        #     for j in range(len(self.board[i])):
-        #         # print(self.board[i][j])
-        #         if (self.board[i][j] == 0):
-        #             vierge = 1
-        #         else:
-        #             vierge = 0
-        #             # print("acces2")
-        # print("table vierge : " + str(vierge))
-        # if (vierge == 0):
+        
+        # Détection si un joueur a rempli une ligne, une colonne, ou une diagonale
         if (str(self.board[0][0]) == str(self.board[1][0]) and str(self.board[1][0]) == str(self.board[2][0]) and int(self.board[0][0]) != 0 and int(self.board[1][0]) != 0 and int(self.board[2][0]) != 0):
             finPartie = 1
-            # print("Résultat 1 : " + str(self.board[0][0]) + " " + str(self.board[1][0]) + " " + str(self.board[2][0]))
         if (str(self.board[0][1]) == str(self.board[1][1]) and str(self.board[1][1]) == str(self.board[2][1]) and int(self.board[0][1]) != 0 and int(self.board[1][1]) != 0 and int(self.board[2][1]) != 0):
             finPartie = 1
-            # print("Résultat 2 : " + str(self.board[0][1]) + " " + str(self.board[1][1]) + " " + str(self.board[2][1]))
         if (str(self.board[0][2]) == str(self.board[1][2]) and str(self.board[1][2]) == str(self.board[2][2]) and int(self.board[0][2]) != 0 and int(self.board[1][2]) != 0 and int(self.board[2][2]) != 0):
             finPartie = 1
-            # print("Résultat 3 : " + str(self.board[0][2]) + " " + str(self.board[1][2]) + " " + str(self.board[2][2]))
         if (str(self.board[0][0]) == str(self.board[0][1]) and str(self.board[0][1]) == str(self.board[0][2]) and int(self.board[0][0]) != 0 and int(self.board[0][1]) != 0 and int(self.board[0][2]) != 0):
             finPartie = 1
-            # print("Résultat 4 : " + str(self.board[0][0]) + " " + str(self.board[0][1]) + " " + str(self.board[0][2]))
         if (str(self.board[1][0]) == str(self.board[1][1]) and str(self.board[1][1]) == str(self.board[1][2]) and int(self.board[1][0]) != 0 and int(self.board[1][1]) != 0 and int(self.board[1][2]) != 0):
             finPartie = 1
-            # print("Résultat 5 : " + str(self.board[1][0]) + " " + str(self.board[1][1]) + " " + str(self.board[1][2]))
         if (str(self.board[2][0]) == str(self.board[2][1]) and str(self.board[2][1]) == str(self.board[2][2]) and int(self.board[2][0]) != 0 and int(self.board[2][1]) != 0 and int(self.board[2][2]) != 0):
             finPartie = 1
-            # print("Résultat 6 : " + str(self.board[2][0]) + " " + str(self.board[2][1]) + " " + str(self.board[2][2]))
         if (str(self.board[0][0]) == str(self.board[1][1]) and str(self.board[1][1]) == str(self.board[2][2]) and int(self.board[0][0]) != 0 and int(self.board[1][1]) != 0 and int(self.board[2][2]) != 0):
             finPartie = 1
-            # print("Résultat 7 : " + str(self.board[0][0]) + " " + str(self.board[1][1]) + " " + str(self.board[2][2]))
         if (str(self.board[0][2]) == str(self.board[1][1]) and str(self.board[1][1]) == str(self.board[2][0]) and int(self.board[0][2]) != 0 and int(self.board[1][1]) != 0 and int(self.board[2][0]) != 0):
             finPartie = 1
-            # print("Résultat 8 : " + str(self.board[0][2]) + " " + str(self.board[1][1]) + " " + str(self.board[2][0]))
-        # print("fin partie : " + str(finPartie))
-        # print("Résultat : " + str(self.board[0][1]) + " " + str(self.board[1][1]) + " " + str(self.board[1][2]))
-
-        # if (str(self.board[0][0]) == str(self.board[1][0]) and str(self.board[1][0]) == str(self.board[2][0])):
-        #     finPartie = 1
-        # if (str(self.board[0][1]) == str(self.board[1][1]) and str(self.board[1][1]) == str(self.board[2][1])):
-        #     finPartie = 1
-        # if (str(self.board[0][2]) == str(self.board[1][2]) and str(self.board[1][2]) == str(self.board[2][2])):
-        #     finPartie = 1
-        # if (str(self.board[0][0]) == str(self.board[0][1]) and str(self.board[0][1]) == str(self.board[0][2])):
-        #     finPartie = 1
-        # if (str(self.board[1][0]) == str(self.board[1][1]) and str(self.board[1][1]) == str(self.board[1][2])):
-        #     finPartie = 1
-        # if (str(self.board[2][0]) == str(self.board[2][1]) and str(self.board[2][1]) == str(self.board[2][2])):
-        #     finPartie = 1
-        # if (str(self.board[0][0]) == str(self.board[1][1]) and str(self.board[1][1]) == str(self.board[2][2])):
-        #     finPartie = 1
-        # if (str(self.board[0][2]) == str(self.board[1][1]) and str(self.board[1][1]) == str(self.board[2][0])):
-        #     finPartie = 1
-
+            
+        # La grille est remplie
         if (str(self.getAvailableMoves()) == "[]"):
             finPartie = 1
             
-        # print ("finPartie : " + str(finPartie))
+        # Lorsqu'une partie est terminée, remplissage de la grille
 
         if (finPartie == 1):
-            # print("Partie terminée")
             for i in range(len(self.board)):
                 for j in range(len(self.board[i])):
                     if self.board[i][j] == EMPTY_VAL:
@@ -132,19 +95,11 @@ class Game:
                             self.board[i][j] == "1"
                         else:
                             self.board[i][j] == "-1"
-            # print(str(self.board[0][0]) + " " + str(self.board[1][0]) + " " + str(self.board[2][0]))
-            # print(str(self.board[0][1]) + " " + str(self.board[1][1]) + " " + str(self.board[2][1]))
-            # print(str(self.board[0][2]) + " " + str(self.board[1][2]) + " " + str(self.board[2][2]))
-            # print("")
+                            
         else:
             return GAME_STATE_NOT_ENDED
 
-        # for i in range(len(self.board)):
-        #     for j in range(len(self.board[i])):
-        #         if self.board[i][j] == EMPTY_VAL:
-        #             return GAME_STATE_NOT_ENDED
-
-        # Rows
+        # Détection par ligne
         for i in range(len(self.board)):
             candidate = self.board[i][0]
             for j in range(len(self.board[i])):
@@ -153,7 +108,7 @@ class Game:
             if candidate != 0:
                 return candidate
 
-        # Columns
+        # Détection par colonne
         for i in range(len(self.board)):
             candidate = self.board[0][i]
             for j in range(len(self.board[i])):
@@ -162,7 +117,7 @@ class Game:
             if candidate != 0:
                 return candidate
 
-        # First diagonal
+        # Diagonale 1
         candidate = self.board[0][0]
         for i in range(len(self.board)):
             if candidate != self.board[i][i]:
@@ -170,7 +125,7 @@ class Game:
         if candidate != 0:
             return candidate
 
-        # Second diagonal
+        # Diagonale 2
         candidate = self.board[0][2]
         for i in range(len(self.board)):
             if candidate != self.board[i][len(self.board[i]) - i - 1]:
@@ -192,57 +147,45 @@ class Game:
     def addToHistory(self, board):
         self.boardHistory.append(board)
 
-    # def printHistory(self):
-    #     print(self.boardHistory)
-
     def move(self, position, player):
         availableMoves = self.getAvailableMoves()
-        # print ("mouvements : " + str(availableMoves))
+        # Positionnement du joueur dans la grille
         for i in range(len(availableMoves)):
             if position[0] == availableMoves[i][0] and position[1] == availableMoves[i][1]:
-                # print(player)
-                # print(str(position[0]) + "  " + str(position[1]))
                 self.board[position[0]][position[1]] = player
                 self.addToHistory(copy.deepcopy(self.board))
 
-
+    # Simulation d'une partie
     def simulate(self, playerToMove):
-        scaler = MinMaxScaler()
+
+        # La partie continue tant que la partie n'est pas terminée
         while (self.getGameResult() == GAME_STATE_NOT_ENDED):
+
+            # Détection des mouvements disponibles
             availableMoves = self.getAvailableMoves()
-            #scaler.fit(availableMoves)
             selectedMove = availableMoves[random.randrange(0, len(availableMoves))]
-            # selectedMove = scaler.fit(availableMoves)
-            # selectedMove = scaler.transform(selectedMove)
-            # minmaxscale = MinMaxScaler().fit(availableMoves)
             
-            # print(availableMoves)
-            # availableMoves = minmaxscale.transform(availableMoves)
-            # print(availableMoves)
-            # print(random.randint(0, 9))
+            # Changement de tour
             self.move(selectedMove, playerToMove)
             if playerToMove == PLAYER_X_VAL:
                 playerToMove = PLAYER_O_VAL
             else:
                 playerToMove = PLAYER_X_VAL
-        # Get the history and build the training set
-        # print(self.boardHistory)
+
+        # Ajout des données dans le model
         for historyItem in self.boardHistory:
             self.trainingHistory.append((self.getGameResult(), copy.deepcopy(historyItem)))
 
     def simulateNeuralNetwork(self, nnPlayer, model):
         playerToMove = PLAYER_X_VAL
         while (self.getGameResult() == GAME_STATE_NOT_ENDED):
-            # print (nnPlayer)
-            # print (PLAYER_O_VAL)
+            
+            # L'ordinateur sélectionne une case
             if nnPlayer == PLAYER_O_VAL:
-                # print ("test2")
                 availableMoves = self.getAvailableMoves()
-                # if playerToMove == nnPlayer:
                 maxValue = 0
                 bestMove = availableMoves[0]
                 for availableMove in availableMoves:
-                    # get a copy of a board
                     boardCopy = copy.deepcopy(self.board)
                     boardCopy[availableMove[0]][availableMove[1]] = nnPlayer
                     if nnPlayer == PLAYER_X_VAL:
@@ -252,10 +195,9 @@ class Game:
                     if value > maxValue:
                         maxValue = value
                         bestMove = availableMove
-                    # print (bestMove)
                 selectedMove = bestMove
-                # else:
-                #     selectedMove = availableMoves[random.randrange(0, len(availableMoves))]
+                
+            # Le joueur sélectionne une case
             if nnPlayer == PLAYER_X_VAL:
                 selectedMove = ""
                 while (selectedMove == ""):
@@ -281,117 +223,24 @@ class Game:
                         selectedMove = [2,0]
                     if (selectedMove == ""):
                         print('Entrée non valide')
-                # print ("test1")
 
-            # print(selectedMove)
-            # selectedMove = [1,1]
-            # print (nnPlayer)
-            # print (selectedMove)
-            # print (PLAYER_X_VAL)
-            # print (PLAYER_O_VAL)
+            # Changement de tour du joueur
             self.move(selectedMove, nnPlayer)
             if nnPlayer == PLAYER_X_VAL:
                 nnPlayer = PLAYER_O_VAL
             else:
                 nnPlayer = PLAYER_X_VAL
-            # print (nnPlayer)
 
             self.printBoard()
-
-            # print(str(self.board[0][0]) + " " + str(self.board[1][0]) + " " + str(self.board[2][0]))
-            # print(str(self.board[0][1]) + " " + str(self.board[1][1]) + " " + str(self.board[2][1]))
-            # print(str(self.board[0][2]) + " " + str(self.board[1][2]) + " " + str(self.board[2][2]))
-            
-            # print(str(self.board[0][0]) + " " + str(self.board[1][0]) + " " + str(self.board[2][0]))
-            # print(str(self.board[0][1]) + " " + str(self.board[1][1]) + " " + str(self.board[2][1]))
-            # print(str(self.board[0][2]) + " " + str(self.board[1][2]) + " " + str(self.board[2][2]))
-            # print("")
 
     def getTrainingHistory(self):
         return self.trainingHistory
 
+    # Nombre de parties uniquement jouées par l'ordinateur dans le but d'entraîner le model
     def simulateManyGames(self, playerToMove, numberOfGames):
-        # playerXWins = 0
-        # playerOWins = 0
-        # draws = 0
         for i in range(numberOfGames):
             self.resetBoard()
             self.simulate(playerToMove)
-        #     if self.getGameResult() == PLAYER_X_VAL:
-        #         playerXWins = playerXWins + 1
-        #     elif self.getGameResult() == PLAYER_O_VAL:
-        #         playerOWins = playerOWins + 1
-        #     else:
-        #         draws = draws + 1
-        # totalWins = playerXWins + playerOWins + draws
-        # print ('X Wins: ' + str(int(playerXWins * 100/totalWins)) + '%')
-        # print('O Wins: ' + str(int(playerOWins * 100 / totalWins)) + '%')
-        # print('Draws: ' + str(int(draws * 100 / totalWins)) + '%')
-
-    def simulateManyNeuralNetworkGames(self, nnPlayer, numberOfGames, model, nnPlayerWins, randomPlayerWins, draws):
-    # def simulateManyNeuralNetworkGames(self, nnPlayer, numberOfGames, model):
-        # nnPlayerWins = 0
-        # randomPlayerWins = 0
-        # draws = 0
-        # print ("NN player")
-        # print (nnPlayer)
-        # for i in range(numberOfGames):
-        # partie = true
-        # while (partie = true)
-            # print ("Jeu numéro " + str(i))
-        self.resetBoard()
-        self.simulateNeuralNetwork(nnPlayer, model)
-        # print(str(self.getGameResult()) + " et " + str(nnPlayer))
-
-        print("Partie terminée")
-
-        if (self.getGameResult() == GAME_STATE_DRAW):
-            draws = draws + 1
-            print ("Egalité")
-        elif (self.getGameResult() == PLAYER_X_VAL):
-            nnPlayerWins = nnPlayerWins + 1
-            print ("Vous avez gagné")
-        elif (self.getGameResult() == PLAYER_O_VAL):
-            randomPlayerWins = randomPlayerWins + 1
-            print ("J'ai gagné")
-
-        numberOfGames = numberOfGames + 1
-
-        # totalWins = playerXWins + playerOWins + draws
-        # totalWins = nnPlayerWins + randomPlayerWins + draws
-        print (numberOfGames)
-        print (nnPlayerWins)
-        print (randomPlayerWins)
-        print (draws)
-
-        print ('Victoires du joueur (X)     : ' + str(int(nnPlayerWins * 100/numberOfGames)) + '%')
-        print ('Victoires de la machine (O) : ' + str(int(randomPlayerWins * 100 / numberOfGames)) + '%')
-        print ('Egalité                     : ' + str(int(draws * 100 / numberOfGames)) + '%')
-
-        # if self.getGameResult() == nnPlayer:
-        #     print ("Vous avez gagné")
-        #     nnPlayerWins = nnPlayerWins + 1
-        # elif self.getGameResult() == GAME_STATE_DRAW:
-        #     draws = draws + 1
-        #     print ("Egalité")
-        # else: 
-        #     randomPlayerWins = randomPlayerWins + 1
-        #     print ("J'ai gagné")
-        self.printBoard()
-
-            # validationChoix = ""
-            # while (validationChoix == ""):
-            #     print('Voulez-vous continuer (o/n) :')
-            #     choix = input()
-            #     if (choix == "o"):
-            #         validationChoix = "ok"
-            #     if (choix == "n"):
-            #         partie = false
-            #         validationChoix = "ok"
-            #     if (validationChoix == ""):
-            #         print('Choix non valide')
-
-        # totalWins = nnPlayerWins + randomPlayerWins + draws
 
 if __name__ == "__main__":
     game = Game()
@@ -399,6 +248,7 @@ if __name__ == "__main__":
 
     ticTacToeModel = TicTacToeModel(9, 3, 100, 32)
 
+    # Chargement du model ou création si inexistant
     try:
         ticTacToeModel.model = keras.models.load_model("morbac.h5")
         print(ticTacToeModel.model.layers[0])
@@ -412,45 +262,25 @@ if __name__ == "__main__":
         ticTacToeModel.train(game.getTrainingHistory())
 
     while (partie == True):
-        # print ("J'apprends à jouer")
-        # game.simulateManyGames(1, 100)
-        # ticTacToeModel = TicTacToeModel(9, 3, 100, 32)
-        # ticTacToeModel.train(game.getTrainingHistory())
-        # ticTacToeModel.save("morbac.h5")
 
-        
-        # ticTacToeModel = TicTacToeModel(9, 3, 100, 32)
-
-        # try:
-        #     ticTacToeModel.model = keras.models.load_model("morbac.h5")
-        #     print("Chargement du modèle sauvegardé")
-        # except:
-        #     print("Création du modèle")
-        #     print ("J'apprends à jouer")
-        #     game.simulateManyGames(1, 100)
-        #     ticTacToeModel.train(game.getTrainingHistory())
-
+        # Sélection au sort de celui qui commmence
         print ("Le jeu commence")
         print ("Tirage au sort")
         if (random.randint(0, 1) == 0):
-            # joueur = PLAYER_X_VAL
-            # player.set_player(PLAYER_X_VAL)
             player = Player(PLAYER_X_VAL)
             print ("A vous de commencer")
         else:
-            # joueur = PLAYER_O_VAL
-            # player.set_player(PLAYER_O_VAL)
             player = Player(PLAYER_O_VAL)
             print ("Je commence")
         joueur = player.get_player()
-        # game.simulateManyNeuralNetworkGames(joueur, 100, ticTacToeModel)
-        # game.simulateManyNeuralNetworkGames(joueur, numberOfGames, ticTacToeModel, nnPlayerWins, randomPlayerWins, draws)
 
+        # Lancement de la partie
         game.resetBoard()
         game.simulateNeuralNetwork(joueur, ticTacToeModel)
 
         print("Partie terminée")
 
+        # Vérifier qui a gagné
         if (game.getGameResult() == GAME_STATE_DRAW):
             draws = draws + 1
             print ("Egalité")
@@ -463,17 +293,13 @@ if __name__ == "__main__":
 
         numberOfGames = numberOfGames + 1
 
-        print (numberOfGames)
-        print (nnPlayerWins)
-        print (randomPlayerWins)
-        print (draws)
-
         print ('Victoires du joueur (X)     : ' + str(int(nnPlayerWins * 100/numberOfGames)) + '%')
         print ('Victoires de la machine (O) : ' + str(int(randomPlayerWins * 100 / numberOfGames)) + '%')
         print ('Egalité                     : ' + str(int(draws * 100 / numberOfGames)) + '%')
 
         game.printBoard()
 
+        # Proposer de continuer la partie
         validationChoix = ""
         while (validationChoix == ""):
             print('Voulez-vous continuer (o/n) ? :')
@@ -488,9 +314,8 @@ if __name__ == "__main__":
             if (validationChoix == ""):
                 print('Choix non valide')
 
+        # Learning et sauvegarde du model
         print ("Je réfléchis à de nouvelles stratégies")
         game.simulateManyGames(1, 100)
         ticTacToeModel.train(game.getTrainingHistory())
-    # print("Simulating with Neural Network as O Player:")
-    # game.simulateManyNeuralNetworkGames(PLAYER_O_VAL, 10, ticTacToeModel)
 

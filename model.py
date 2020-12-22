@@ -2,16 +2,13 @@ from keras.layers import Dense
 from keras.layers import Dropout
 from keras.models import Sequential
 from keras.utils import to_categorical
-# from tensorflow import keras
 import numpy as np
 
 
 class TicTacToeModel:
 
+    # Initialisation du model
     def __init__(self, numberOfInputs, numberOfOutputs, epochs, batchSize):
-        # try:
-        #     self.model = load_model("morbac.h5")
-        # except:
         self.epochs = epochs
         self.batchSize = batchSize
         self.numberOfInputs = numberOfInputs
@@ -22,16 +19,9 @@ class TicTacToeModel:
         self.model.add(Dense(128, activation='relu'))
         self.model.add(Dense(128, activation='relu'))
         self.model.add(Dense(numberOfOutputs, activation='softmax'))
-        self.model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
+        self.model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])       
 
-        # try:
-        #     self.model = keras.models.load_model("morbac.h5")
-        #     print("Chargement du modèle sauvegardé")
-        # except:
-        #     print("Création du modèle")
-
-            
-
+    # Entraînement du model
     def train(self, dataset):
         input = []
         output = []
