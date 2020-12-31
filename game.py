@@ -190,7 +190,7 @@ class Game:
                     boardCopy = copy.deepcopy(self.board)
                     boardCopy[availableMove[0]][availableMove[1]] = nnPlayer
                     
-                    value = model.predict(boardCopy, 0)
+                    value = model.predict(boardCopy, 2)
                     if value > maxValue:
                         maxValue = value
                         bestMove = availableMove
