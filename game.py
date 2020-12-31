@@ -135,7 +135,7 @@ class Game:
 
         return GAME_STATE_DRAW
 
-
+    # Détection des mouvements disponibles
     def getAvailableMoves(self):
         availableMoves = []
         for i in range(len(self.board)):
@@ -144,12 +144,13 @@ class Game:
                     availableMoves.append([i, j])
         return availableMoves
 
+    # Ajout en mémoire de la partie effectuée
     def addToHistory(self, board):
         self.boardHistory.append(board)
 
+    # Positionnement du joueur dans la grille
     def move(self, position, player):
         availableMoves = self.getAvailableMoves()
-        # Positionnement du joueur dans la grille
         for i in range(len(availableMoves)):
             if position[0] == availableMoves[i][0] and position[1] == availableMoves[i][1]:
                 self.board[position[0]][position[1]] = player
@@ -188,10 +189,8 @@ class Game:
                 for availableMove in availableMoves:
                     boardCopy = copy.deepcopy(self.board)
                     boardCopy[availableMove[0]][availableMove[1]] = nnPlayer
-                    if nnPlayer == PLAYER_X_VAL:
-                        value = model.predict(boardCopy, 0)
-                    else:
-                        value = model.predict(boardCopy, 2)
+                    
+                    value = model.predict(boardCopy, 0)
                     if value > maxValue:
                         maxValue = value
                         bestMove = availableMove
@@ -233,6 +232,7 @@ class Game:
 
             self.printBoard()
 
+    # Lancer l'entrainement
     def getTrainingHistory(self):
         return self.trainingHistory
 
@@ -246,20 +246,14 @@ if __name__ == "__main__":
     game = Game()
     partie = True
 
-    ticTacToeModel = TicTacToeModel(9, 3, 100, 32)
+    # Initialisation du model
+    ticTacToeModel = TicTacToeModel(9, 3, 200, 8)
 
-    # Chargement du model ou création si inexistant
-    try:
-        ticTacToeModel.model = keras.models.load_model("morbac.h5")
-        print(ticTacToeModel.model.layers[0])
-        # for historyItem in ticTacToeModel.model:
-        #     self.trainingHistory.append((ticTacToeModel.model, copy.deepcopy(historyItem)))
-        print("Chargement du modèle sauvegardé")
-    except:
-        print("Création du modèle")
-        print ("J'apprends à jouer")
-        game.simulateManyGames(1, 100)
-        ticTacToeModel.train(game.getTrainingHistory())
+    # Entainement du model
+    print("Création du modèle")
+    print ("J'apprends à jouer")
+    game.simulateManyGames(1, 200)
+    ticTacToeModel.train(game.getTrainingHistory())
 
     while (partie == True):
 
@@ -307,15 +301,15 @@ if __name__ == "__main__":
             if (choix == "o"):
                 validationChoix = "ok"
                 
+                # Learning et sauvegarde du model
+                print ("Je réfléchis à de nouvelles stratégies")
+                game.simulateManyGames(1, 200)
+                ticTacToeModel.train(game.getTrainingHistory())
+                
             if (choix == "n"):
                 partie = False
                 validationChoix = "ok"
                 print ("Au revoir")
             if (validationChoix == ""):
                 print('Choix non valide')
-
-        # Learning et sauvegarde du model
-        print ("Je réfléchis à de nouvelles stratégies")
-        game.simulateManyGames(1, 100)
-        ticTacToeModel.train(game.getTrainingHistory())
 

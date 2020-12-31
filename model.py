@@ -2,6 +2,7 @@ from keras.layers import Dense
 from keras.layers import Dropout
 from keras.models import Sequential
 from keras.utils import to_categorical
+from tensorflow import keras
 import numpy as np
 
 
@@ -31,14 +32,15 @@ class TicTacToeModel:
 
         X = np.array(input).reshape((-1, self.numberOfInputs))
         y = to_categorical(output, num_classes=3)
-        # Train and test data split
+        
+        # Procédure d'entrainement
         boundary = int(0.8 * len(X))
         X_train = X[:boundary]
         X_test = X[boundary:]
         y_train = y[:boundary]
         y_test = y[boundary:]
+        
         self.model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=self.epochs, batch_size=self.batchSize)
-        self.model.save("morbac.h5")
 
     def predict(self, data, index):
         return self.model.predict(np.array(data).reshape(-1, self.numberOfInputs))[0][index]
