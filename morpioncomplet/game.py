@@ -1,106 +1,134 @@
 # Class Game - Gestion du tableau de jeu
+from copy import Error
+from players.agent import Agent
+from players.player import Player
+from board import Board
+
+from random import shuffle
+
 class Game:
 
-    # Initialisation du tableau de jeu
-    def __init__(self, size, player1, player2):
-        self.size = size
-        self.table = [["*" for x in range(size)] for y in range(size)]
-        self.player1 = player1
-        self.player2 = player2
+    PENALTY = -2
+    NEUTRAL = 0
+    REWARD = 1
 
-    # Deroulement de la partie
+    BOARD_SIZE = 3
+
+    def __init__(self, player1, player2, verbose = True):
+
+        self.__players = [player1, player2]
+
+        self.verbose = verbose
+
+        self.done = False
+        self.__board = Board(Game.BOARD_SIZE, self.verbose)
+
+    def is_valid_action(self, coord):
+        ligne, col = coord
+        return self.__board.is_valid_action(ligne, col)
+
+    def reset(self):
+        self.done = False
+        self.__board = Board(Game.BOARD_SIZE, self.verbose)
+
+        for player in self.__players:
+            if type(player) is Agent: 
+                player.reset(self.get_state(player.sign))
+
+    def get_state(self, player_sign):
+        """
+            Renvoie l'etat du jeu a la demande d'un joueur 
+            dont le signe est passe en parametre
+
+            Un emplacement vide vaut 0
+            Un emplacement adverse vaut 0.5
+            Un emplacement du joueur vaut 1
+        """
+        tot = []
+        for ligne in self.__board.table:
+            for element in ligne:
+                if element is False:
+                    tot.append(0)
+                elif element != player_sign:
+                    tot.append(0.5)
+                elif element == player_sign:
+                    tot.append(1)
+        return tot
+
     def start(self):
-        win = "*"
-        while win == "*" and not self.full(self.table):
-            for player in [self.player1, self.player2]:
-                if not self.full(self.table) and win == "*":
-                    self.show()
-                    print("Au tour de "+player.sign+" de jouer !")
-                    x = y = -1
-                    while not self.play(x, y, player.sign):
-                        (x, y) = player.play(self)
-                    print(player.sign+" joue ligne "+str(y+1)+", colonne "+str(x+1))
-                    win = self.win(self.table)
-        self.show()
-        if win == "*":
-            print("Match nul !")
-            return
-        print(win+" remporte la partie !")
+        while not self.done:
+            #Change aleatoirement le premier joueur
+            shuffle(self.__players)
+            for player in self.__players:
+                self.__play(player)
 
-    # Affichage du tableau
-    def show(self):
-        print("")
-        line = "  "
-        for x in range(self.size):
-            line += str(x+1)+" "
-        print(line)
-        for y in range(self.size):
-            line = str(y+1)+" "
-            for x in range(self.size):
-                line += self.table[x][y]+" "
-            print(line)
-        print("")
+                if self.__win():
+                    self.__endGame(player)
 
-    # Change la valeur d'une case si libre
-    def play(self, x, y, player):
-        if x >= 0 and x < self.size and y >= 0 and y < self.size and self.table[x][y] == "*":
-            self.table[x][y] = player
-            return True
-        return False
+                    for p in self.__players:
+                        if p == player:
+                            # params de remember:  game, reward, done
+                            p.remember(
+                                self.get_state(p.sign), #state
+                                Game.REWARD, #reward
+                                self.done # done
+                            )
+                        else: #perdant
+                            p.remember(
+                                self.get_state(p.sign), #state
+                                Game.PENALTY, #reward
+                                self.done # done
+                            )
+                    break
 
-    # Regarde si un joueur a gagne
-    def win(self, table):
-        for i in range(self.size):
-            line = self.line(table, i)
-            if line != "*":
-                return line
-            col = self.col(table, i)
-            if col != "*":
-                return col
-        for i in range(2):
-            dia = self.dia(table, i)
-            if dia != "*":
-                return dia
-        return "*"
+                elif self.__board.full():
+                    self.__endGame(player)
+                    
+                    for p in self.__players:
+                        p.remember(
+                            self.get_state(p.sign), #state
+                            Game.NEUTRAL, #reward
+                            self.done # done
+                        )
+                    break
 
-    # Verifie une ligne
-    def line(self, table, y):
-        player = table[0][y]
-        changed = False
-        for x in range(self.size):
-            if table[x][y] != player:
-                changed = True
-        if changed:
-            return "*"
-        return player
+                else:
+                    
+                    player.remember(
+                        self.get_state(player.sign), #state
+                        Game.NEUTRAL, #reward
+                        self.done # done
+                    )
+                    continue
 
-    # Verifie une colonne
-    def col(self, table, x):
-        player = table[x][0]
-        changed = False
-        for y in range(self.size):
-            if table[x][y] != player:
-                changed = True
-        if changed:
-            return "*"
-        return player
+    def __play(self, player):
+        accepted = False
+        
+        if self.verbose:
+            print(f"\nAu tour de {player.sign}.")
+            self.__board.show()
 
-    # Verifie une diagonale
-    def dia(self, table, d):
-        i = (0 if d == 0 else self.size-1)
-        player = table[i][0]
-        changed = False
-        for x in range(self.size):
-            i = (x if d == 0 else self.size-1-x)
-            if table[i][x] != player:
-                changed = True
-        if changed:
-            return "*"
-        return player
+        while not accepted:
+            ligne, col = player.play(self)
+            accepted = self.__board.placer(ligne, col, player.sign)
+            if self.verbose: print(f'Valeur entre 1 et {self.BOARD_SIZE}')
 
-    def full(self, table):
-        for x in range(self.size):
-            for y in range(self.size):
-                if table[x][y] == "*":
-                    return False
-        return True
+    def __endGame(self, player):
+        if self.verbose:
+            if self.__board.full():
+                print('Match nul !')
+            else:
+                print(f"{player.sign} a gagne !")
+
+            self.__board.show()
+
+        self.done = True
+
+    def __win(self):
+        return self.__board.ligne() or self.__board.col() or self.__board.diagonale()
+
+if __name__ == '__main__':
+    p1 = Player('O')
+    p2 = Player('X')
+    game = Game(p1, p2)
+    game.start()

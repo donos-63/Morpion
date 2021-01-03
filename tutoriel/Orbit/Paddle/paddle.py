@@ -119,12 +119,14 @@ class Paddle():
     # 1 do nothing
     # 2 move right
 
+    # Public
     def reset(self):
 
         self.paddle.goto(0, -275)
         self.ball.goto(0, 100)
         return [self.paddle.xcor()*0.01, self.ball.xcor()*0.01, self.ball.ycor()*0.01, self.ball.dx, self.ball.dy]
 
+    # Public
     def step(self, action):
 
         self.reward = 0

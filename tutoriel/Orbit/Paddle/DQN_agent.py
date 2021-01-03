@@ -5,11 +5,7 @@ import numpy as np
 from keras import Sequential
 from collections import deque
 from keras.layers import Dense
-import matplotlib.pyplot as plt
 from keras.optimizers import Adam
-
-env = Paddle()
-np.random.seed(0)
 
 
 class DQN:
@@ -72,41 +68,3 @@ class DQN:
         self.model.fit(states, targets_full, epochs=1, verbose=0)
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
-
-
-def train_dqn(episode):
-
-    loss = []
-
-    action_space = 3
-    state_space = 5
-    max_steps = 1000
-
-    agent = DQN(action_space, state_space)
-    for e in range(episode):
-        state = env.reset()
-        state = np.reshape(state, (1, state_space))
-        score = 0
-        for i in range(max_steps):
-            action = agent.act(state)
-            reward, next_state, done = env.step(action)
-            score += reward
-            next_state = np.reshape(next_state, (1, state_space))
-            agent.remember(state, action, reward, next_state, done)
-            state = next_state
-            agent.replay()
-            if done:
-                print("episode: {}/{}, score: {}".format(e, episode, score))
-                break
-        loss.append(score)
-    return loss
-
-
-if __name__ == '__main__':
-
-    ep = 100
-    loss = train_dqn(ep)
-    plt.plot([i for i in range(ep)], loss)
-    plt.xlabel('episodes')
-    plt.ylabel('reward')
-    plt.show()

@@ -1,25 +1,30 @@
-#!/usr/local/bin/python3
+from game import Game
+from players.agent import Agent
 
-# Jeu du morpion
-# Le joueur commence a jouer en premier, l'ordinateur joue ensuite
+import matplotlib.pyplot as plt
+import numpy as np
 
-# Import des bibliotheques necessaires au programme
-from game import *
-from player import *
-from human import *
-from computer import *
 
-# Choix de la configuration
-print("1 - Joueur contre joueur\n2 - Joueur contre ordinateur\n3 - Ordinateur contre joueur\n4 - Ordinateur contre ordinateur\n")
-config = 0
-while config < 1 or config > 4:
-    config = int(input("Choisissez une configuration : "))
+def train_IA(nb_episode, env):
+    loss = []
+    # max_step = 10
 
-if config == 1:
-    Game(3, Human("X"), Human("O")).start()
-elif config == 2:
-    Game(3, Human("X"), Computer("O")).start()
-elif config == 3:
-    Game(3, Computer("X"), Human("O")).start()
-else:
-    Game(3, Computer("X"), Computer("O")).start()
+    for e in range(nb_episode):
+        env.start()
+        print("episode: {}/{}, score: {} et {} pour {} et {}".format(e+1, nb_episode, p1.score, p2.score, p1.sign, p2.sign))
+        env.reset()
+
+    return loss
+
+if __name__ == '__main__':
+    p1 = Agent('O')
+    p2 = Agent('X')
+    env = Game(p1, p2, verbose = False)
+    np.random.seed(0)
+    
+    nb_episode = 1000
+
+    train_IA(nb_episode, env)
+    
+    p1.plot(nb_episode)
+    p2.plot(nb_episode)
