@@ -6,7 +6,9 @@ from board import Board
 class HumanPlayer(base_player):
     
     def play_move(self, _, board):
-        
+        '''
+            Select move by human
+        '''
         while True:
             next = False
             x = y = 0
@@ -29,6 +31,9 @@ class HumanPlayer(base_player):
             print('Mauvais emplacement, veuillez recommencer')
 
     def is_move_valid(self, list_available_moves, x, y):
+        '''
+            Check if move is possible
+        '''
         return (x,y) in list_available_moves
 
     def __init__(self):

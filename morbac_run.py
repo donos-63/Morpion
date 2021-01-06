@@ -21,31 +21,22 @@ class Morpion():
         
         for i in range(0, len(player_types)):
             while(not next):
-                p = input("(Joueur {})  1:Humain - 2:mlp - 3:random - 4:Dnn - 5:MinMax  : ".format(i+1))
-                if(p.isdigit() and int(p) >0 and int(p) < 6):
+                p = input("(Joueur {})  {}:Humain - {}:random - {}:cnn - {}:MinMax  : "
+                                .format(i+1, PlayerType.Human.value, PlayerType.Random.value, PlayerType.Dnn.value, PlayerType.MinMax.value))
+                
+                if(p.isdigit() and int(p) >0 and int(p) < 5):
                     next = True
                     player_types[i] = int(p)
 
             next = False
 
-        self.nb_simulation = None
-
         self.P1 = Player(self.factory.create_player(player_types[0]), PlayerPawn.P1.value)
         self.P2 = Player(self.factory.create_player(player_types[1]), PlayerPawn.P2.value)
 
-        if self.P1.instance.need_reinforcement or self.P2.instance.need_reinforcement:
-            next=False
-
-            while(not next):
-                self.nb_simulation  = input("Nb entraintement de l'IA  :  ")
-                if(self.nb_simulation.isdigit() and int(self.nb_simulation) > 0):
-                    next = True
-
-            self.nb_simulation = int(self.nb_simulation)
-            if self.P1.instance.need_reinforcement:
-                self.P1.set_ia_initialisation(self.nb_simulation)
-            if self.P2.instance.need_reinforcement:
-                self.P2.set_ia_initialisation(self.nb_simulation)
+        if self.P1.instance.need_reinforcement:
+            self.P1.test_ia_initialisation()
+        if self.P2.instance.need_reinforcement:
+            self.P2.test_ia_initialisation()
 
     def __play_game(self):
                
@@ -63,7 +54,7 @@ class Morpion():
                 for p in [self.P1, self.P2]:
                     list_moves = Board.get_available_moves(board)
 
-                    if(len(list_moves) == 0):
+                    if(Board.get_end_of_party(board)):
                         self.__print_board(board)
                         print('Pas de bol, Egalité.')
                         finish = True
@@ -74,7 +65,7 @@ class Morpion():
 
                     self.board.set_move(p.pawn, x, y)
 
-                    if(Board.isPlayerWin(self.board.get_board(), p.pawn)):
+                    if(Board.is_player_win(self.board.get_board(), p.pawn)):
                         self.__print_board(board)
                         print('Bravo, Joueur ',p.pawn,' a gagné.')
                         p.im_winner()
@@ -88,11 +79,11 @@ class Morpion():
 
             party_counter += 1
             
-            answer = input("play again? (y/n): ")
+            answer = input("play again? [y/n]: ")
             if answer != "y":
                 playing = False
 
-        print("Player 1 gagnant: ", self.P1.win_count, " - Player 2 gagnant: ", self.P2.win_count, " - égalités: " , party_counter - self.P1.win_count - self.P2.win_count)
+        print("Player 1 gagnant: ", self.P1.get_win_counter(), " - Player 2 gagnant: ", self.P2.get_win_counter(), " - égalités: " , party_counter - self.P1.get_win_counter() - self.P2.get_win_counter())
 
     def play(self):
         self.__initialize_game()
@@ -100,6 +91,9 @@ class Morpion():
 
     #todo : pygame?
     def __print_board(self, board):
+        '''
+            print the board to the screen
+        '''
         if(self.P1.instance.is_autobot and self.P2.instance.is_autobot):
             return
             
