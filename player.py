@@ -1,4 +1,5 @@
 from enum import Enum
+from graphical_render import GraphicalRender
 
 class PlayerPawn(Enum):
     P1 = 'X'
@@ -18,18 +19,28 @@ class Player():
         '''
         if self.instance.need_reinforcement:
             if self.instance.is_reinforcement_exists():
-                answer = input("Simulation exists. Force new? [y/n]: ")
-                if answer.lower() != "y":
+                # answer = input("Simulation exists. Force new? [y/n]: ")
+                # if answer.lower() != "y":
+                #     force = False
+
+                force = GraphicalRender.get_instance().yes_no_screen('Simulation exists. Force new?')
+                if not force:
                     self.instance.load_simulation()
                     return
 
+                # answer = input("Simulation exists. Force new? [y/n]: ")
+                # if answer.lower() != "y":
+                #     self.instance.load_simulation()
+                #     return
+
             next = False
             nb_training = 0
-            while(not next):
-                nb_training  = input("Nb entraintement de l'IA  :  ")
-                if(nb_training.isdigit() and int(nb_training) > 0):
-                    nb_training = int(nb_training)
-                    next = True
+            nb_training = GraphicalRender.get_instance().configuration_of_simulations()
+            # while(not next):
+            #     nb_training  = input("Nb entraintement de l'IA  :  ")
+            #     if(nb_training.isdigit() and int(nb_training) > 0):
+            #         nb_training = int(nb_training)
+            #         next = True
 
             self.instance.initialize_simulation(nb_training)
 

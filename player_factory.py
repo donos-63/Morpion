@@ -1,6 +1,5 @@
 from board import Board
 from enum import Enum
-from random import Random
 import players.human_player as hplay
 import players.random_player as rplay
 import players.dnn_player as dplay
