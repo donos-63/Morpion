@@ -77,3 +77,8 @@ x;y;state
 0;1;X---O---X
 1;2;X--OO-X-X
 2;1;XX-OO-XOX
+1;1;O-XX-----
+2;2;O-XXO--X-
+1;1;O--X-X---
+2;0;O--XOX--X
+1;0;O-OXOXX-X
