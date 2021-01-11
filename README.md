@@ -1,7 +1,7 @@
 
-# Morpion
+# Fantoir-groupe3
 
-![logo](https://github.com/moh-IA/Morpion/blob/develop/msi/screenshots/brief_logo.png)
+![logo](screenshots/brief_logo.png)
 
 La société DVD Subject Blue souhaite développer une intelligence artificielle pour son prochain jeu : L'ombre de Morbac. Le principe est de gagner contre Morbac, expert au jeu du Morpion. Pour que son jeu rencontre le succès, il faut que l'intelligence artificielle soit à la hauteur. Et c'est pour cela que la société vous sollicite !
 
@@ -33,10 +33,16 @@ La société DVD Subject Blue souhaite développer une intelligence artificielle
 
 
 * Mode graphique: disponible en lancant [pygame_launcher.py](https://github.com/moh-IA/Morpion/blob/develop/msi/pygame_launcher.py "pygame_launcher.py")
+*en mode graphique, profitez du son pour une meilleur expérience*
 
 ![graphic](https://github.com/moh-IA/Morpion/blob/develop/msi/screenshots/graphic_screen.gif)
 
-**en mode graphique, profitez du son pour une meilleur expérience**
+### Fonctionnement
+* Le modèle CNN entrainé à partir de 2 bots random. Il agit un peu comme quelqu'un ayant eu comme partenaire un mauvais entraineur. Selon les simulations, sa performance est plus au moins bonne mais celle fournit dans Github est plutôt efficace. Il n'est pas nécessaire de rejouer des simulations à chaque fois, le modèle est sauvegardé dans [models/cnn.model](https://github.com/moh-IA/Morpion/blob/develop/msi/models/cnn.model "cnn.model")
 
+* Le modèle Min/max privilégie le meilleur coup à la profondeur la moindre, ainsi il est quasiment imbattable! Afin de gagner du temps de calcul, chaque coup calculé est stocké dans le fichier [models/minmax.saves](https://github.com/moh-IA/Morpion/blob/develop/msi/models/minmax.saves "minmax.saves") : puisque l'algorithme offrira toujours la même réponse au même tableau, il n'est pas nécessaire de relancer le calcul à chaque fois. Il est possible de supprimer ce fichier afin de forcer le recalcule (mais celà ne changera rien aux réponses de l'IA)
+
+### Méa-culpa
+* Le modèle CNN est issue de https://medium.com/swlh/tic-tac-toe-and-deep-neural-networks-ea600bc53f51 et n'a pas été optimisé comme il le devrait
 
 
