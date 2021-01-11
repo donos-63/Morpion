@@ -25,5 +25,5 @@ class HumanPlayer(base_player):
         return (x,y) in list_available_moves
 
     def __init__(self):
-        self.need_reinforcement = False
+        self.is_need_reinforcement = False
         self.is_autobot = False

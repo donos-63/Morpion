@@ -17,7 +17,7 @@ class Player():
         '''
             check if current instance of player need simulation, then launch
         '''
-        if self.instance.need_reinforcement:
+        if self.instance.is_need_reinforcement:
             if self.instance.is_reinforcement_exists():
 
                 force = GraphicalManager.get_instance().yes_no_screen('Une simulation existe. Forcer une nouvelle?')
@@ -25,16 +25,21 @@ class Player():
                     self.instance.load_simulation()
                     return
 
-            next = False
             nb_training = 0
             nb_training = GraphicalManager.get_instance().configuration_of_simulations()
 
             self.instance.initialize_simulation(nb_training)
 
     def im_winner(self):
+        '''
+            increment number of party won
+        '''
         self.__win_count += 1
 
     def get_win_counter(self):
+        '''
+            return number of party won
+        '''
         return self.__win_count
 
     def get_oponnent_for(player):

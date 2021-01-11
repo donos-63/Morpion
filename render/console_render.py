@@ -8,10 +8,14 @@ class ConsoleRender():
             print the board to the screen
         '''
         self.__clean()
+   
         self.__display_board(board)
         
 
     def user_interact(self, board):
+        '''
+            manage user interaction whith board
+        '''
         while True:
             next = False
 
@@ -32,14 +36,16 @@ class ConsoleRender():
 
             return x, y
 
-
     def print_main_menu(self, player):
+        '''
+            print main menu (player selection)
+        '''        
         next = False
         player_type = -1
 
         while(not next):
                 p = input("(Joueur {})  {}:Humain - {}:random - {}:cnn - {}:MinMax  : "
-                                .format(player + 1, PlayerType.Human.value, PlayerType.Random.value, PlayerType.Dnn.value, PlayerType.MinMax.value))
+                                .format(player + 1, PlayerType.Human.value, PlayerType.Random.value, PlayerType.CNN.value, PlayerType.MinMax.value))
                 
                 if(p.isdigit() and int(p) >0 and int(p) < 5):
                     next = True
@@ -48,9 +54,10 @@ class ConsoleRender():
         return player_type
 
     def __display_board(self, board):
-            
-        # if(self.P1.instance.is_autobot and self.P2.instance.is_autobot):
-        #     return
+        '''
+            display board in screen
+        '''
+        # Draw game board
             
         print()
         print('    ','A', "|", 'B', "|", 'C')
@@ -63,13 +70,22 @@ class ConsoleRender():
 
 
     def display_warning(self, message, _):
+        '''
+            display warning (blink text)
+        '''        
         print(message)
 
     
     def display_static(self, message, board = None):
+        '''
+            display static message
+        '''        
         print(message)
 
     def yes_no_screen(self, message):
+        '''
+            display screen with message and yes/no options
+        '''        
         answer = input(message + ' [y/n] :  ')
         if answer != "y":
             return False
@@ -78,10 +94,16 @@ class ConsoleRender():
 
 
     def end_of_party(self, message, _):
+        '''
+            display end of party
+        '''        
         print(message)
 
 
     def configuration_of_simulations(self):
+        '''
+            display menu to customize simulation
+        '''        
         next = False
         nb_training = 0
         while(not next):
@@ -92,8 +114,18 @@ class ConsoleRender():
 
         return nb_training
         
-    def print_synthesis(self, player_X, player_O, draws):
-        print("Player 1 gagnant: ", player_X, " - Player 2 gagnant: ", player_O, " - égalités: " , draws)
+    def print_synthesis(self, type_X, win_X, type_O, win_O, draws):
+        '''
+            resume the party to the screen
+        '''        
+        print("Player 1 (", type_X,") gagnant: ", win_X, " - Player 2 (",type_O,") gagnant: ", win_O, " - égalités: " , draws)
+
+    def computer_is_working(self, _):
+        '''
+            displayed when IA if performing computation
+        '''        
+        print('computer is computing computations....')
+
 
     def __clean(self):
         """

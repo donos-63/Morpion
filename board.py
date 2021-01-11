@@ -75,9 +75,6 @@ class Board():
         #concat to string (ex : ---XO--X-)
         return ''.join(game_turn)
 
-    def __store_game(self, board):
-        self.boardHistory.append(board)
-
     def set_move(self, player, x, y):
         '''
             apply a move to the board
@@ -86,8 +83,7 @@ class Board():
             raise Exception('set_move', 'bad move')
 
         self.board[y][x] = player
-        self.__store_game(self.board)
-        return True
+
 
     def board_to_numercial(board):
         '''

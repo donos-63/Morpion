@@ -1,4 +1,5 @@
 import os
+from render.graphical_manager import GraphicalManager
 import pandas as pd
 from enum import Enum
 from board import Board
@@ -6,6 +7,7 @@ import copy as cp
 from math import inf as infinity
 from player import Player, PlayerPawn
 from players.base_player import base_player
+from time import sleep
 
 class MinMaxPlayer(base_player):
 
@@ -57,9 +59,11 @@ class MinMaxPlayer(base_player):
         exists, move = self.test_state(board)
 
         if not exists:
+            GraphicalManager.get_instance().computer_is_working(board)
             move, _ = self.__minmax(player, cp.deepcopy(board))
             self.store_move(board, move)
-    
+
+            
         return move
 
     def test_state(self, board):
@@ -93,7 +97,7 @@ class MinMaxPlayer(base_player):
             self.history = pd.read_csv(MinMaxPlayer.MODEL_FILEPATH, encoding='utf-8', sep=';')
 
     def __init__(self):
-        self.need_reinforcement = False
+        self.is_need_reinforcement = False
         self.is_autobot = True
         self.load_pre_calculated_moves()
 

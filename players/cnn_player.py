@@ -13,7 +13,7 @@ import players.random_player as rplay
 from board import Board
 import players.min_max_player as mmplay
 
-class DnnPlayer(base_player):
+class CNNPlayer(base_player):
 
     MODEL_FILEPATH = os.path.join(base_player.MODELS_FOLDER,'cnn.model')
 
@@ -63,7 +63,7 @@ class DnnPlayer(base_player):
         board = Board(PlayerPawn.NONE.value)
 
         firstplayer = random.randint(1,2)
-        playerToMove = self.me.value #dnn ia start
+        playerToMove = self.me.value #CNN ia start
         if firstplayer == 2:
             playerToMove = Player.get_oponnent_for(self.me) #oponnent start
 
@@ -127,7 +127,7 @@ class DnnPlayer(base_player):
         return (X[:trainNum], X[trainNum:], y[:trainNum], y[trainNum:])
 
     def __init__(self, board):
-        self.need_reinforcement = True
+        self.is_need_reinforcement = True
         self.is_autobot = True
         self.initial_board = cp.deepcopy(board)
 
@@ -165,7 +165,7 @@ class DnnPlayer(base_player):
         self.model = self.get_model()
         history = self.model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=50, batch_size=64)
 
-        self.model.save(DnnPlayer.MODEL_FILEPATH, save_format='h5')
+        self.model.save(CNNPlayer.MODEL_FILEPATH, save_format='h5')
         print(self.model.summary())
         self.print_model_history(history)
 
@@ -173,13 +173,13 @@ class DnnPlayer(base_player):
         '''
             check if reinforcement model exists
         '''
-        return os.path.exists(DnnPlayer.MODEL_FILEPATH)
+        return os.path.exists(CNNPlayer.MODEL_FILEPATH)
 
     def load_simulation(self):
         '''
             load model
         '''
-        self.model = models.load_model(DnnPlayer.MODEL_FILEPATH)
+        self.model = models.load_model(CNNPlayer.MODEL_FILEPATH)
 
     def get_model(self):
         outcomes = 3 # draw, X-wins, O-wins
