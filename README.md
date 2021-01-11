@@ -1,5 +1,5 @@
 
-# Fantoir-groupe3
+# Morpion
 
 ![logo](screenshots/brief_logo.png)
 
