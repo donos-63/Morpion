@@ -4,7 +4,6 @@ from enum import Enum
 from board import Board
 import copy as cp
 from math import inf as infinity
-import numpy as np
 from player import Player, PlayerPawn
 from players.base_player import base_player
 

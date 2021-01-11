@@ -1,20 +1,14 @@
-from os import system
+from os import path
+import os
 import sys
 import pygame
 from itertools import cycle
 
-class GraphicalRender():
-    __instance = None
-
-    def get_instance():
-        if(GraphicalRender.__instance == None):
-            __instance = GraphicalRender()
-        
-        return __instance
-
+class PygameRender():
     def __init__(self):
                       
         pygame.init()
+        pygame.display.set_caption('Morbac IA')
         self.size = self.width, self.height = 600, 400
 
         # Colors
@@ -25,13 +19,12 @@ class GraphicalRender():
 
         self.screen = pygame.display.set_mode(self.size)
 
-        self.mediumFont = pygame.font.Font("OpenSans-Regular.ttf", 28)
-        self.largeFont = pygame.font.Font("OpenSans-Regular.ttf", 40)
-        self.smallFont = pygame.font.Font("OpenSans-Regular.ttf", 16)
-        self.moveFont = pygame.font.Font("OpenSans-Regular.ttf", 60)
+        self.mediumFont = pygame.font.Font(os.path.join(os.getcwd(),"fonts", "Western Retro.ttf"), 28)
+        self.largeFont = pygame.font.Font(os.path.join(os.getcwd(),"fonts", "OpenSans-Regular.ttf"), 40)
+        self.smallFont = pygame.font.Font(os.path.join(os.getcwd(),"fonts", "Western Retro.ttf"), 25)
+        self.moveFont = pygame.font.Font(os.path.join(os.getcwd(),"fonts", "space-wham.ttf"), 60)
 
 
-    #todo : pygame?
     def print_board(self, board):
         '''
             print the board to the screen
@@ -42,6 +35,8 @@ class GraphicalRender():
 
 
     def user_interact(self, board):
+        self.screen.fill(0)
+
         while True:
             
             tiles  = self.__display_board(board)
@@ -60,6 +55,8 @@ class GraphicalRender():
             pygame.display.flip()
 
     def print_main_menu(self, player):
+        self.screen.fill(0)
+
         while(True):
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -86,7 +83,7 @@ class GraphicalRender():
                     )
                     pygame.draw.rect(self.screen, self.white, rect, 3)
 
-                    move = self.moveFont.render(users[menu_index], True, self.white)
+                    move = self.largeFont.render(users[menu_index], True, self.white)
                     moveRect = move.get_rect()
                     moveRect.center = rect.center
                     self.screen.blit(move, moveRect)
@@ -109,6 +106,7 @@ class GraphicalRender():
 
 
     def __display_board(self, board):
+
             # Draw game board
             tile_size = 80
             tile_origin = (self.width / 2 - (1.5 * tile_size),
@@ -176,6 +174,8 @@ class GraphicalRender():
         pygame.display.flip()
 
     def yes_no_screen(self, message):
+        self.screen.fill(0)
+
         while True:
             self.display_static(message)
             # Draw buttons
@@ -211,12 +211,14 @@ class GraphicalRender():
 
 
     def end_of_party(self, message, board):
+        self.screen.fill(0)
+
         while True:
             self.display_static(message)
             self.__display_board(board)
 
             # Draw game board
-            tile_size = 80
+            tile_size = 100
             tile_origin = (self.width / 2 - (0.5 * tile_size),
                             340)
 
@@ -244,6 +246,8 @@ class GraphicalRender():
             pygame.display.flip()
 
     def configuration_of_simulations(self):
+        self.screen.fill(0)
+
         center_x, center_y = (self.width / 2 - 50, self.height / 2)
         prompt = self.smallFont.render('Entrez un nombre : ', True, self.white)
         prompt_rect = prompt.get_rect(center=(center_x, center_y))
@@ -282,6 +286,8 @@ class GraphicalRender():
         return int(user_input_value)
         
     def print_synthesis(self, player_X, player_O, draws):
+        self.screen.fill(0)
+
         while True:
             self.display_static('Résumé des parties')
 
@@ -295,9 +301,9 @@ class GraphicalRender():
                 self.screen.blit(title, titleRect)
 
             # finish button
-            tile_size = 80
+            tile_size = 120
             tile_origin = (self.width / 2 - (0.5 * tile_size),
-                            340)
+                            320)
 
             rect = pygame.Rect(
                         tile_origin[0],
